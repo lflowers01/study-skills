@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COURSE Exam N Study Tool</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1c2330;--mut:#667085;--line:#dfe3ea;--acc:#b8860b;--acc2:#8a6508;--ok:#1a7f4b;--okbg:#e6f6ed;--no:#c0392b;--nobg:#fdeceb;--warn:#b7791f;--btn:#eef0f4}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b2029;--fg:#e8ebf0;--mut:#9aa4b2;--line:#2b323e;--acc:#e0b040;--acc2:#f0c860;--ok:#4cc38a;--okbg:#14301f;--no:#ff7b6e;--nobg:#3a1c1a;--warn:#e0b040;--btn:#252c38}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:12px 16px 60px}
+header{display:flex;flex-wrap:wrap;gap:6px;align-items:center;position:sticky;top:0;background:var(--bg);padding:10px 16px;border-bottom:1px solid var(--line);z-index:5;max-width:none;justify-content:center}
+header h1{font-size:15px;margin:0 12px 0 0;color:var(--acc2)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{border:0;background:none;color:var(--mut);font:inherit;padding:6px 12px;border-radius:8px;cursor:pointer}
+nav button.on{background:var(--acc);color:#111;font-weight:600}
+nav .n{font-size:11px;background:var(--no);color:#fff;border-radius:9px;padding:0 6px;margin-left:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+h2{font-size:18px;margin:4px 0 8px}h3{font-size:15px;margin:14px 0 6px}
+.mut{color:var(--mut);font-size:14px}.tag{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.big{font-size:34px;font-weight:700;color:var(--acc2);line-height:1.1}
+button{font:inherit;color:var(--fg)}
+.btn{background:var(--acc);color:#111;border:0;border-radius:8px;padding:8px 16px;font-weight:600;cursor:pointer}
+.btn.alt{background:var(--btn);color:var(--fg);font-weight:500}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips button{background:var(--btn);border:1px solid transparent;border-radius:16px;padding:4px 12px;cursor:pointer;font-size:14px}
+.chips button.on{border-color:var(--acc);background:var(--card);font-weight:600}
+.qt{font-size:17px;margin-bottom:12px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--btn);border:2px solid transparent;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:16px}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.sel{border-color:var(--acc);background:var(--card)}
+.opt.right{background:var(--okbg);border-color:var(--ok)}.opt.wrong{background:var(--nobg);border-color:var(--no)}
+.opt:disabled{cursor:default;color:var(--fg)}
+.fb{margin-top:12px;padding:12px;border-radius:10px}.fb.ok{background:var(--okbg)}.fb.no{background:var(--nobg)}
+.steps{margin-top:6px;font-size:15px}
+.bar{height:8px;background:var(--btn);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.lecrow{display:grid;grid-template-columns:150px 1fr 48px;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.lo{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.lo .t{flex:1 1 320px;font-size:14px}.lo .s{font-size:12px;color:var(--mut)}
+.conf button{border:1px solid var(--line);background:var(--btn);border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer}
+.conf .c1.on{background:var(--nobg);border-color:var(--no)}.conf .c2.on{background:#fff3d6;color:#5a4300;border-color:var(--warn)}.conf .c3.on{background:var(--okbg);border-color:var(--ok)}
+.qnav{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.qnav button{width:34px;height:34px;border:1px solid var(--line);background:var(--btn);border-radius:6px;cursor:pointer;font-size:13px}
+.qnav .a{background:var(--acc);color:#111}.qnav .cur{outline:2px solid var(--fg)}
+#tm{font-variant-numeric:tabular-nums;font-weight:700}
+.flash{min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:20px;padding:20px}
+sub,sup{line-height:0}
+.warn{color:var(--warn)}
+.flag{background:none;border:1px solid var(--line);border-radius:6px;padding:2px 10px;font-size:13px;color:var(--mut);cursor:pointer}.flag.on{background:#fff3d6;border-color:var(--warn);color:#5a4300;font-weight:600}
+footer{margin-top:30px;text-align:center}
+footer button{background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font-size:13px}
+@media (max-width:520px){.lecrow{grid-template-columns:110px 1fr 40px}header h1{width:100%;text-align:center;margin:0}}
+</style>
+</head>
+<body>
+<header><h1>COURSE · Exam N</h1><nav id="nav"></nav></header>
+<main id="app"></main>
+<script src="config.js"></script>
+<script src="gen-lib.js"></script>
+<script src="gen.js"></script>
+<script src="book.js"></script><!-- drop this line if the course has no assigned textbook problems -->
+<script src="app.js"></script>
+</body>
+</html>
