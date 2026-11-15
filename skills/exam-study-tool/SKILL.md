@@ -22,6 +22,7 @@ Build a static, offline study site for one specific exam, driven by that course'
 - Find and download, into `Desktop\<COURSE>\`: the **learning objectives** sheet, the **sample/practice exam** (plus its key), the **formula/reference sheet** given at the exam, and the **exam information** sheet. These four decide everything.
 - Read them and extract, explicitly: exam **date/time**, **question count and format** (MC? free response? both?), **units/lectures covered**, **what's provided at the exam** (so those facts become flashcards only if NOT provided), **what must be memorized**.
 - Ask the user for the textbook PDF if the objectives reference textbook problems. Confirm the **edition matches** the course's — section and problem numbers shift between editions, and a mismatch silently poisons every page reference.
+- **Official past exams (gap loop):** also pull the course's official past exams and keys. Purdue Math: `https://www.math.purdue.edu/academic/courses/oldexams.php?course=<MA number>`; other departments: their official purdue.edu pages and the course's Brightspace. Use only matching-scope years. They set the mock blueprint (count question types per exam), feed the truth checks in step 5, and are the real-question pool for the gap loop (interactive-math-tutor §5f).
 - See `references/pipeline.md` for the Brightspace and PDF gotchas (they will bite otherwise).
 
 ### 2. Confirm scope with the user
@@ -55,6 +56,8 @@ Copy `template/` into the study-tool folder: `index.html`, `app.js`, `gen-lib.js
 After a mock exam, the results screen has **➕ Add what I need to study to my list**. It works offline with no API key: for each objective the student missed it adds one item to the To study tab — objective, "missed 2 of 3", the `study[obj].tip`, reading/sample/book pointers, and a collapsed copy of a question they missed with its worked solution. One item per objective; re-missing it later un-ticks it. Items live in `S.auto` in localStorage.
 
 There is also **Copy results for Claude**, which puts the whole mock (question, options, correct, chosen, worked steps) on the clipboard as JSON. When the user pastes it, do the deeper analysis the button cannot: read *which wrong option they chose* (each distractor is a specific mistake), group misses into repeated habits, and write the findings into `config.js` `todo` (habit fixes first, then per-unit drills with time estimates). Say how many misses trace to each habit — small samples (22 questions) swing a unit from 0% to 100%, so prioritize repeated patterns over per-unit scores.
+
+**Then close the loop with real exams:** take the objectives the mock exposed, map them to question types, and run the gap loop in the `interactive-math-tutor` skill (§5f): real archive questions of those types on paper, teach each miss, re-measure. The study site drills; the archive is the real thing.
 
 **Why not call an LLM from the page:** a browser page would have to ship an API key and bill per click. The deterministic button plus paste-to-Claude gives the same result without either. Only revisit this if the user asks for it explicitly, and then use a small proxy, never a key in the HTML.
 

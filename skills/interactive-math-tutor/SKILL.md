@@ -1,6 +1,6 @@
 ---
 name: interactive-math-tutor
-description: General interactive study tutor for any subject (math, chemistry, physics, engineering, writing, etc.). Walks the user through problems one step at a time with rendered cards they click to answer, gives feedback on each choice, and switches to do-it-on-paper practice when they're struggling. Use when the user wants to study, review missed exam questions, learn a concept, or be tutored "step by step", "tutor style", or "like before".
+description: General interactive study tutor for any subject (math, chemistry, physics, engineering, writing, etc.). Walks the user through problems one step at a time with rendered cards they click to answer, gives feedback on each choice, and switches to do-it-on-paper practice when they're struggling. Finds weak question types from graded work and drills them with real questions from the official Purdue past-exam archive. Use when the user wants to study, review missed exam questions, learn a concept, or be tutored "step by step", "tutor style", or "like before".
 ---
 
 # Interactive study tutor
@@ -82,7 +82,48 @@ For any course with a `final-progress.json` in the study project, after you fini
 6. Tell the user what changed: per topic that moved, old % -> new % with counts, new topics now measured, and the biggest remaining gap, in a short list.
 Rep sets of 1-2 questions can be batched into the next update the same session, but never skipped.
 
-## 5f. Codex and other agents (no card tool)
+## 5f. Gap loop: find weak question types, practice them from the official exam archive, teach
+Use whenever the user is preparing for an exam in a course with past exams (offer it after any graded practice exam or real exam). This is the main way to study for a Purdue course.
+
+**1. Get the real past exams (official sources only).**
+- **Purdue Mathematics** keeps the official archive: `https://www.math.purdue.edu/academic/courses/oldexams.php?course=MA16200` (replace the course number; the list there shows which courses have one). Files are `https://www.math.purdue.edu/academic/courses/past-exams/<number>e<N>-<term><year>.pdf` with the key at `.../past-exams/ans-<same name>`. `e1`, `e2`, `e3` = midterms, `fe` = final; term `f` = fall, `s` = spring. Download into the study project (e.g. `imported/<course>-exams/`).
+- **Other departments:** look on that department's and the course's official purdue.edu pages and in the course's Brightspace (Exam Information, sample/practice exams with keys). Use only official Purdue material and the course's own Brightspace; if a course has no official archive, say so and fall back to its sample exams and homework.
+- If a plain download is blocked, try fetching through `https://r.jina.ai/<url>`; if that fails too, ask the user to download the files.
+- The course's Brightspace exam information is the source of truth for scope and format. Archive exams from years with a different syllabus (topics since moved to another exam, or dropped) are only used for the topics that still match. Say which years you used and why.
+- Use the official answer key, and recompute every answer you rely on. Some archive PDFs are image scans with no text; say so instead of guessing their content.
+
+**2. Tag and weight the question types.**
+- Tag every question on the recent matching-scope exams with a question type, using the course's own topic names, and keep the tags identical across all exams.
+- Weight = how many questions of that type an exam has on average (e.g. "polar area: 2.0 per final"). Store it in `<course>-progress.json` in the study project: `topics` (id, name, weight) and `history` (date, label, `[right, total]` per topic, `null` = not measured yet).
+
+**3. Find the gaps.**
+- Score the user's graded work (real exams, practice exams, drills) per type, using their **first** answer.
+- Priority = weight × (1 − % right). Not-yet-measured types with real weight are gaps too: say so, and measure them early.
+- Show the result (the chart in 5d/5e or a short ranked list) and name the top 2–3 types to work on. Say when samples are small.
+
+**4. Practice the gap with real archive questions.**
+- For the top type, pull 3–5 **real questions of that type from archive exams the user hasn't done yet**, in the original wording, and give them as do-it-on-paper practice (section 3): full question, every option, no hints.
+- When the real archive runs out for a type, write fresh problems in the same style. A fresh problem must differ in **structure**, not just the numbers.
+
+**5. Teach the misses.**
+- Review one miss at a time with the teaching loop (section 2): show the full question, every option, the user's original pick, and the correct one; find the single deciding step they missed and teach only that; then have them redo the key step on paper.
+- Then give 1–2 new questions of the same type (real archive first) to confirm the fix.
+
+**6. Re-measure and repeat.**
+- Add a `history` entry to the progress file, redraw the chart, update `CONTEXT.md`, and move to the next gap.
+- Before the exam: a full mock built from the archive (or a custom one in the real format, 5c) weighted toward the remaining gaps.
+
+**How this user likes to study (keep it):**
+- One short step at a time. No hints unless they ask; don't label the strategy for them.
+- Always show the full question, all options, and their original answer when reviewing.
+- Don't over-explain once they have it; don't redo problems they got right.
+- When they're confused, re-explain plainly with the simplest tool.
+- Real exam wording and the official key are the source of truth.
+- Render math properly (cards in Claude Code; plain Unicode elsewhere).
+- Watch two habits and name them when they happen: changing a correct answer without finding a concrete error, and leaving a setup unfinished when confidence drops.
+- Comprehensive printable packets and printable mocks are welcome when asked.
+
+## 5g. Codex and other agents (no card tool)
 The cards in sections 5, 5d and 5e use Claude's `mcp__visualize__show_widget`. If that tool isn't available (Codex, other agents):
 - Ask each step as plain text: the question, then the options on separate lines as `A.`, `B.`, … and ask the user to reply with the letter. Everything else in the teaching loop stays the same.
 - Write math in plain Unicode (x², √, ≤, →, H₂O) instead of LaTeX, since the chat may not render it.

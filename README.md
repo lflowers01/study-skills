@@ -5,7 +5,18 @@ Two agent skills for studying for college exams:
 | Skill | What it does |
 |---|---|
 | **exam-study-tool** | Builds a personal, offline study website for one exam from the course's own materials (learning objectives, sample exam, formula sheet): randomized practice questions, a timed mock exam that matches the real format, flashcards, an objectives tracker, missed/flagged queues and assigned textbook problems. |
-| **interactive-math-tutor** | Tutors any subject one step at a time: asks one question per step, gives feedback on each answer, switches to do-it-on-paper practice when you're struggling, and can write a printable mock exam (LaTeX → PDF) that matches the real one. |
+| **interactive-math-tutor** | Tutors any subject one step at a time: asks one question per step, gives feedback on each answer, switches to do-it-on-paper practice when you're struggling, and can write a printable mock exam (LaTeX → PDF) that matches the real one. Runs the **gap loop** below. |
+
+### The gap loop (how the two skills study a Purdue course)
+
+1. **Get the real past exams** from Purdue's official archive. Mathematics: `https://www.math.purdue.edu/academic/courses/oldexams.php?course=MA16200` (any MA course number), with official answer keys. Other departments: their official purdue.edu pages and the course's Brightspace (sample exams, exam information). Only official Purdue sources are used, and only years whose scope matches this year's.
+2. **Tag every question by type** using the course's own topic names, and weight each type by how often recent exams test it.
+3. **Find your gaps:** score your graded work per type. Priority = weight × (1 − % right). Types you've never been tested on count as gaps.
+4. **Practice the biggest gap with real archive questions** of that type (original wording, on paper, no hints). When the archive runs out, fresh problems that change the structure, not just the numbers.
+5. **Teach each miss** one step at a time: full question, all options, your original pick, the one step you missed. Then 1–2 new questions of that type to confirm.
+6. **Re-measure and repeat**, with a progress chart per type, and finish with a full mock built from the archive.
+
+exam-study-tool feeds this loop: its mock exam shows which objectives you miss, and those become the question types to drill from the archive.
 
 Both work with or without Brightspace. With a Brightspace MCP server connected, they pull the syllabus, objectives and sample exams themselves; without one, they ask you for the files.
 
@@ -83,6 +94,7 @@ Example prompts:
 - "I have a calc exam Friday, help me study." → exam-study-tool
 - "Tutor me through the questions I missed on my last exam, step by step." → interactive-math-tutor
 - "Make me a printable practice exam for MA 162." → interactive-math-tutor
+- "Find my weakest question types for the MA 162 final and drill them with real past exams." → interactive-math-tutor (gap loop)
 
 ---
 
